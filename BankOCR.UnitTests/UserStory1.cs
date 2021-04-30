@@ -1,4 +1,6 @@
 ﻿using BankOCR;
+using BankOCR.Services;
+using BankOCR.Services.Interfaces;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
