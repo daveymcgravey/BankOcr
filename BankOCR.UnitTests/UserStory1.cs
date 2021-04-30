@@ -1,4 +1,5 @@
 ﻿using BankOCR;
+using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Linq;
@@ -54,7 +55,14 @@ namespace BankOcrKata
   ||_  _|  | _||_|  ||_| _|", "123456789")]
         public void Tests(string input, string expectedResult)
         {
-            var test = input;
+            //Arrange
+            IAccountNumberParsingService accountNumberParsingService = new AccountNumberParsingService();
+
+            //Act
+            string actualResult = accountNumberParsingService.ParseOcrInput(input);
+
+            //Assert
+            actualResult.Should().BeEquivalentTo(expectedResult, because: "The parsing service should return the correctly parsed OCR input");
         }
     }
 }
