@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
+using NUnit.Framework;
 
 namespace BankOcrKata
 {
@@ -13,6 +14,14 @@ namespace BankOcrKata
         [TestCase("012345678", false)]
         public void Tests(string accountNumber, bool isValid)
         {
+            //Arrange
+            IAccountNumberValidationService accountNumberValidationService = new AccountNumberValidationService();
+
+            //Act
+            bool actualResult = accountNumberValidationService.IsChecksumValid(accountNumber);
+
+            //Assert
+            actualResult.Should().Be(isValid, because: "The validation service should return if the account number is valid or not");
         }
     }
 }
