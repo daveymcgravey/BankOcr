@@ -53,6 +53,20 @@ namespace BankOCR.Services
             "|_|" +
             " _|";
 
+        private IReadOnlyDictionary<string, int> ocrInputToDigitMap = new Dictionary<string, int>
+        {
+            {zeroAsString, 0},
+            {oneAsString, 1},
+            {twoAsString, 2},
+            {threeAsString, 3},
+            {fourAsString, 4},
+            {fiveAsString, 5},
+            {sixAsString, 6},
+            {sevenAsString, 7},
+            {eightAsString, 8},
+            {nineAsString, 9},
+        };
+
         public string ParseOcrInput(string input)
         {
             //Split the input in to each individual line of the OCR input and remove the first line as this is always blank so not needed for parsing
@@ -70,41 +84,8 @@ namespace BankOCR.Services
             var ocrInputsAsDigits = new List<int>();
             foreach (var ocrInput in ocrInputs)
             {
-                switch (ocrInput)
-                {
-                    case zeroAsString:
-                        ocrInputsAsDigits.Add(0);
-                        break;
-                    case oneAsString:
-                        ocrInputsAsDigits.Add(1);
-                        break;
-                    case twoAsString:
-                        ocrInputsAsDigits.Add(2);
-                        break;
-                    case threeAsString:
-                        ocrInputsAsDigits.Add(3);
-                        break;
-                    case fourAsString:
-                        ocrInputsAsDigits.Add(4);
-                        break;
-                    case fiveAsString:
-                        ocrInputsAsDigits.Add(5);
-                        break;
-                    case sixAsString:
-                        ocrInputsAsDigits.Add(6);
-                        break;
-                    case sevenAsString:
-                        ocrInputsAsDigits.Add(7);
-                        break;
-                    case eightAsString:
-                        ocrInputsAsDigits.Add(8);
-                        break;
-                    case nineAsString:
-                        ocrInputsAsDigits.Add(9);
-                        break;
-                    default:
-                        break;
-                }
+                int digit;
+                if(ocrInputToDigitMap.TryGetValue(ocrInput, out digit)) { ocrInputsAsDigits.Add(digit); }
             }
 
             //Return the identified digits concatenated as a string
