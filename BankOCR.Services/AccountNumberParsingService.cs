@@ -6,6 +6,53 @@ namespace BankOCR.Services
 {
     public class AccountNumberParsingService : IAccountNumberParsingService
     {
+        private const string zeroAsString =
+            " _ " +
+            "| |" +
+            "|_|";
+        private const string oneAsString =
+            "   " +
+            "  |" +
+            "  |";
+        private const string twoAsString =
+            " _ " +
+            " _|" +
+            "|_ ";
+        private const string threeAsString =
+            " _ " +
+            " _|" +
+            " _|";
+
+        private const string fourAsString =
+            "   " +
+            "|_|" +
+            "  |";
+
+        private const string fiveAsString =
+            " _ " +
+            "|_ " +
+            " _|";
+
+        private const string sixAsString =
+            " _ " +
+            "|_ " +
+            "|_|";
+
+        private const string sevenAsString =
+            " _ " +
+            "  |" +
+            "  |";
+
+        private const string eightAsString =
+            " _ " +
+            "|_|" +
+            "|_|";
+
+        private const string nineAsString =
+            " _ " +
+            "|_|" +
+            " _|";
+
         public string ParseOcrInput(string input)
         {
             //Split the input in to each individual line of the OCR input and remove the first line as this is always blank so not needed for parsing
@@ -25,54 +72,34 @@ namespace BankOCR.Services
             {
                 switch (ocrInput)
                 {
-                    case    " _ " +
-                            "| |" +
-                            "|_|":
+                    case zeroAsString:
                         ocrInputsAsDigits.Add(0);
                         break;
-                    case    "   " +
-                            "  |" +
-                            "  |":
+                    case oneAsString:
                         ocrInputsAsDigits.Add(1);
                         break;
-                    case    " _ " +
-                            " _|" +
-                            "|_ ":
+                    case twoAsString:
                         ocrInputsAsDigits.Add(2);
                         break;
-                    case    " _ " +
-                            " _|" +
-                            " _|":
+                    case threeAsString:
                         ocrInputsAsDigits.Add(3);
                         break;
-                    case    "   " +
-                            "|_|" +
-                            "  |":
+                    case fourAsString:
                         ocrInputsAsDigits.Add(4);
                         break;
-                    case    " _ " +
-                            "|_ " +
-                            " _|":
+                    case fiveAsString:
                         ocrInputsAsDigits.Add(5);
                         break;
-                    case    " _ " +
-                            "|_ " +
-                            "|_|":
+                    case sixAsString:
                         ocrInputsAsDigits.Add(6);
                         break;
-                    case    " _ " +
-                            "  |" +
-                            "  |":
+                    case sevenAsString:
                         ocrInputsAsDigits.Add(7);
                         break;
-                    case    " _ " +
-                            "|_|" +
-                            "|_|":
+                    case eightAsString:
                         ocrInputsAsDigits.Add(8);
                         break;
-                    case    " _ " +
-                            "|_|" +
-                            " _|":
+                    case nineAsString:
                         ocrInputsAsDigits.Add(9);
                         break;
                     default:
