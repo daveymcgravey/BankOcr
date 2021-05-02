@@ -1,4 +1,6 @@
-﻿using FluentAssertions;
+﻿using BankOCR.Services;
+using BankOCR.Services.Interfaces;
+using FluentAssertions;
 using NUnit.Framework;
 
 namespace BankOcrKata
