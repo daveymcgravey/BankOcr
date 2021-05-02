@@ -53,18 +53,18 @@ namespace BankOCR.Services
             "|_|" +
             " _|";
 
-        private IReadOnlyDictionary<string, int> ocrInputToDigitMap = new Dictionary<string, int>
+        private IReadOnlyDictionary<string, string> ocrInputToDigitMap = new Dictionary<string, string>
         {
-            {zeroAsString, 0},
-            {oneAsString, 1},
-            {twoAsString, 2},
-            {threeAsString, 3},
-            {fourAsString, 4},
-            {fiveAsString, 5},
-            {sixAsString, 6},
-            {sevenAsString, 7},
-            {eightAsString, 8},
-            {nineAsString, 9},
+            {zeroAsString, "0"},
+            {oneAsString,"1"},
+            {twoAsString, "2"},
+            {threeAsString, "3"},
+            {fourAsString, "4"},
+            {fiveAsString, "5"},
+            {sixAsString, "6"},
+            {sevenAsString, "7"},
+            {eightAsString,"8"},
+            {nineAsString, "9"},
         };
 
         public string ParseOcrInput(string input)
@@ -81,15 +81,15 @@ namespace BankOCR.Services
             }
 
             //Match each ocr input to a digit
-            var ocrInputsAsDigits = new List<int>();
+            var ocrInputsAsDigits = new List<string>();
             foreach (var ocrInput in ocrInputs)
             {
-                int digit;
-                if(ocrInputToDigitMap.TryGetValue(ocrInput, out digit)) { ocrInputsAsDigits.Add(digit); }
+                string digitAsString;
+                if(ocrInputToDigitMap.TryGetValue(ocrInput, out digitAsString)) { ocrInputsAsDigits.Add(digitAsString); } else { ocrInputsAsDigits.Add("?"); }
             }
 
             //Return the identified digits concatenated as a string
-            return string.Join(string.Empty, ocrInputsAsDigits.Select(x => x));
+            return string.Join(string.Empty, ocrInputsAsDigits);
         }
     }
 }
