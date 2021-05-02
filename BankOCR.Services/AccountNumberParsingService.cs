@@ -10,7 +10,7 @@ namespace BankOCR.Services
         {
             var newLinesplits = input.Split("\r\n").ToList();
             newLinesplits.RemoveAll(x => string.IsNullOrEmpty(x));
-            
+
             var ocrInputs = new List<string>();
             for (int i = 0; i < 27; i = i + 3)
             {
@@ -26,6 +26,51 @@ namespace BankOCR.Services
                             "| |" +
                             "|_|":
                         ocrInputsAsDigits.Add(0);
+                        break;
+                    case    "   " +
+                            "  |" +
+                            "  |":
+                        ocrInputsAsDigits.Add(1);
+                        break;
+                    case    " _ " +
+                            " _|" +
+                            "|_ ":
+                        ocrInputsAsDigits.Add(2);
+                        break;
+                    case    " _ " +
+                            " _|" +
+                            " _|":
+                        ocrInputsAsDigits.Add(3);
+                        break;
+                    case    "   " +
+                            "|_|" +
+                            "  |":
+                        ocrInputsAsDigits.Add(4);
+                        break;
+                    case    " _ " +
+                            "|_ " +
+                            " _|":
+                        ocrInputsAsDigits.Add(5);
+                        break;
+                    case    " _ " +
+                            "|_ " +
+                            "|_|":
+                        ocrInputsAsDigits.Add(6);
+                        break;
+                    case    " _ " +
+                            "  |" +
+                            "  |":
+                        ocrInputsAsDigits.Add(7);
+                        break;
+                    case    " _ " +
+                            "|_|" +
+                            "|_|":
+                        ocrInputsAsDigits.Add(8);
+                        break;
+                    case    " _ " +
+                            "|_|" +
+                            " _|":
+                        ocrInputsAsDigits.Add(9);
                         break;
                     default:
                         break;
