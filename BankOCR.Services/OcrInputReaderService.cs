@@ -42,13 +42,12 @@ namespace BankOCR.Services
                 }
             }
 
-            if (validAccountNumbers.Count == 0) { return ocrInputAsAccountNumber + " ILL"; }
             if (validAccountNumbers.Count == 1) { return validAccountNumbers[0]; }
             if (validAccountNumbers.Count > 1) {
                 return ocrInputAsAccountNumber + " AMB [" + string.Join(", ", validAccountNumbers.Select(x => "'" + x + "'")) + "]";
             }
 
-            return "";
+            return ocrInputAsAccountNumber + " ILL";
         }
     }
 }
