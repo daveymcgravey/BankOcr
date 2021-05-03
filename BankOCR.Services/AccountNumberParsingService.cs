@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BankOCR.Services
 {
@@ -106,7 +107,7 @@ namespace BankOCR.Services
             }
 
             var parsedAccountNumber = ParseOcrInput(input);
-            IList<string> possibleAccountNumbers = new List<string>();
+            var possibleAccountNumbers = new List<string>();
 
             var counter = -1;
             foreach (var ocrInput in ocrInputs)
@@ -150,6 +151,7 @@ namespace BankOCR.Services
                 }
             }
 
+            possibleAccountNumbers.RemoveAll(x => !Regex.IsMatch(x, @"[0-9]{9}"));
             return possibleAccountNumbers;
         }
     }

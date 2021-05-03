@@ -41,7 +41,6 @@ namespace BankOCR.Services
                     validAccountNumbers.Add(possibleAccountNumber);
                 }
             }
-            validAccountNumbers.RemoveAll(x => x.Contains("?"));
 
             if (validAccountNumbers.Count == 0) { return ocrInputAsAccountNumber + " ILL"; }
             if (validAccountNumbers.Count == 1) { return validAccountNumbers[0]; }
