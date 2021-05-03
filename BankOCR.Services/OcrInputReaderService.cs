@@ -25,5 +25,10 @@ namespace BankOCR.Services
 
             return accountNumberValidationService.IsChecksumValid(accountNumber) ? accountNumber : accountNumber + " ERR";
         }
+
+        public string VerifyOcrInputAccountingForMistakes(string input)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

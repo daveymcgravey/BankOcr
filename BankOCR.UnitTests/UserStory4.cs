@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using BankOCR.Services;
+using BankOCR.Services.Interfaces;
+using FluentAssertions;
+using NUnit.Framework;
 using System;
 using System.Linq;
 
@@ -56,6 +59,17 @@ namespace BankOcrKata
   | _||_||_||_|  |  |  | _|", "490867715")]
         public void Tests(string input, string expectedResult)
         {
+            //Arrange
+            IAccountNumberParsingService accountNumberParsingService = new AccountNumberParsingService();
+            IAccountNumberValidationService accountNumberValidationService = new AccountNumberValidationService();
+
+            IOcrInputReaderService ocrInputReaderService = new OcrInputReaderService(accountNumberParsingService, accountNumberValidationService);
+
+            //Act
+            string actualResult = ocrInputReaderService.VerifyOcrInputAccountingForMistakes(input);
+
+            //Assert
+            actualResult.Should().BeEquivalentTo(expectedResult, because: "The file reader service should return the account number along with information on validity of legibility and checksum");
         }
     }
 }
