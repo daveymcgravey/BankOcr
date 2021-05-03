@@ -95,26 +95,34 @@ namespace BankOCR.Services
 
         public IEnumerable<string> GetPossibleAccountNumbers(string input)
         {
+            var newLinesplits = input.Split("\r\n").ToList();
+            newLinesplits.RemoveAll(x => string.IsNullOrEmpty(x));
+
+            //Take 3 chars from each line to create each individual digit as a separate string
+            var ocrInputs = new List<string>();
+            for (int i = 0; i < 27; i = i + 3)
+            {
+                ocrInputs.Add(string.Concat(newLinesplits.Select(x => x.Substring(i, 3))));
+            }
+
             var parsedAccountNumber = ParseOcrInput(input);
             IList<string> possibleAccountNumbers = new List<string>();
 
             var counter = -1;
-            foreach (var digit in parsedAccountNumber)
+            foreach (var ocrInput in ocrInputs)
             {
                 counter++;
                 //Try and get the string representation of the digit
-                var stringToTryChanging = ocrInputToDigitMap.FirstOrDefault(x => x.Value == digit.ToString()).Key;
-                if (stringToTryChanging is null) { break; }
-                for (int i = 0; i < stringToTryChanging.Length; i++)
+                for (int i = 0; i < ocrInput.Length; i++)
                 {
                     //Replace a character and see if can get a different value from the dictionary
-                    StringBuilder sb = new StringBuilder(stringToTryChanging);
+                    StringBuilder sb = new StringBuilder(ocrInput);
                     sb[i] = ' ';
                     var ocrInputWithNewCharacter = sb.ToString();
 
                     string stringAsDigit;
                     //Try and see if there is a value in the dictionary for the new string with the new character
-                    if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != stringToTryChanging)
+                    if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != ocrInput)
                     {
                         //If it exists we need to figure ut what the whole string would be and add it in
                         //First, get the where we are in the account number
@@ -125,7 +133,7 @@ namespace BankOCR.Services
                     sb[i] = '_';
                     ocrInputWithNewCharacter = sb.ToString();
 
-                    if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != stringToTryChanging)
+                    if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != ocrInput)
                     {
                         var possibleAccountNumber = parsedAccountNumber.Substring(0, counter) + stringAsDigit + parsedAccountNumber.Substring(counter + 1, parsedAccountNumber.Length - counter - 1);
                         possibleAccountNumbers.Add(possibleAccountNumber);
@@ -134,7 +142,7 @@ namespace BankOCR.Services
                     sb[i] = '|';
                     ocrInputWithNewCharacter = sb.ToString();
 
-                    if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != stringToTryChanging)
+                    if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != ocrInput)
                     {
                         var possibleAccountNumber = parsedAccountNumber.Substring(0, counter) + stringAsDigit + parsedAccountNumber.Substring(counter + 1, parsedAccountNumber.Length - counter - 1);
                         possibleAccountNumbers.Add(possibleAccountNumber);
