@@ -22,7 +22,10 @@ namespace BankOcrKata
         public void Tests(string input, string expectedResult)
         {
             //Arrange
-            IOcrInputReaderService ocrInputReaderService = new OcrInputReaderService();
+            IAccountNumberParsingService accountNumberParsingService = new AccountNumberParsingService();
+            IAccountNumberValidationService accountNumberValidationService = new AccountNumberValidationService();
+
+            IOcrInputReaderService ocrInputReaderService = new OcrInputReaderService(accountNumberParsingService, accountNumberValidationService);
 
             //Act
             string actualResult = ocrInputReaderService.VerifyOcrInput(input);

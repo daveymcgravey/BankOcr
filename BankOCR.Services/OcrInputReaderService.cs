@@ -1,5 +1,4 @@
 ﻿using BankOCR.Services.Interfaces;
-using System;
 
 namespace BankOCR.Services
 {
@@ -7,10 +6,13 @@ namespace BankOCR.Services
     {
         private readonly IAccountNumberParsingService accountNumberParsingService;
         private readonly IAccountNumberValidationService accountNumberValidationService;
-        public OcrInputReaderService()
+        public OcrInputReaderService(
+            IAccountNumberParsingService accountNumberParsingService,
+            IAccountNumberValidationService accountNumberValidationService
+        )
         {
-            this.accountNumberParsingService = new AccountNumberParsingService();
-            this.accountNumberValidationService = new AccountNumberValidationService();
+            this.accountNumberParsingService = accountNumberParsingService;
+            this.accountNumberValidationService = accountNumberValidationService;
         }
 
         public string VerifyOcrInput(string input)
