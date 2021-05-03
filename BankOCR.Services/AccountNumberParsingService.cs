@@ -87,9 +87,6 @@ namespace BankOCR.Services
             var ocrInputs = ConvertOcrInputToDigitsAsStrings(input).ToList();
             var parsedAccountNumber = ParseOcrInput(input);
             var possibleAccountNumbers = new List<string>();
-
-            string stringAsDigit;
-            string ocrInputWithNewCharacter;
             var characters = new string[3] { " ", "_", "|" };
 
             var totalOcrInputs = ocrInputs.Count();
@@ -102,15 +99,12 @@ namespace BankOCR.Services
                     StringBuilder sb = new StringBuilder(ocrInputs[i]);
                     foreach (var character in characters)
                     {
-                        sb.Remove(j, 1);
-                        sb.Insert(j, character);
-                        ocrInputWithNewCharacter = sb.ToString();
+                        string ocrInputWithNewCharacter = sb.Remove(j, 1).Insert(j, character).ToString();
 
-                        //Try and see if there is a value in the dictionary for the new string with the new character
-                        if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != ocrInputs[i])
+                        //Try and see if there is a value in the dictionary for the new string with the new character but we don't want to use it if it's the same as the original value
+                        if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out string stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != ocrInputs[i])
                         {
-                            //If it exists we need to figure ut what the whole string would be and add it in
-                            //First, get the where we are in the account number
+                            //If it exists we need to figure out what the whole string would be and add it in
                             var possibleAccountNumber = parsedAccountNumber.Substring(0, i) + stringAsDigit + parsedAccountNumber.Substring(i + 1, parsedAccountNumber.Length - i - 1);
                             possibleAccountNumbers.Add(possibleAccountNumber);
                         }
