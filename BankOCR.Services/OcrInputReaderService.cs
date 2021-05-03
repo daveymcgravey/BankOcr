@@ -1,4 +1,6 @@
 ﻿using BankOCR.Services.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BankOCR.Services
 {
@@ -28,7 +30,24 @@ namespace BankOCR.Services
 
         public string VerifyOcrInputAccountingForMistakes(string input)
         {
-            throw new System.NotImplementedException();
+            var ocrInputAsAccountNumber = accountNumberParsingService.ParseOcrInput(input);
+            var possibleAccountNumbers = accountNumberParsingService.GetPossibleAccountNumbers(input);
+            var validAccountNumbers = new List<string>();
+            foreach (var possibleAccountNumber in possibleAccountNumbers)
+            {
+                if (accountNumberValidationService.IsChecksumValid(possibleAccountNumber))
+                {
+                    validAccountNumbers.Add(possibleAccountNumber);
+                }
+            }
+
+            if (validAccountNumbers.Count == 0) { return ocrInputAsAccountNumber + " ILL"; }
+            if (validAccountNumbers.Count == 1) { return validAccountNumbers[0]; }
+            if (validAccountNumbers.Count > 1) {
+                return ocrInputAsAccountNumber + " AMB [" + string.Join(", ", validAccountNumbers.Select(x => "'" + x + "'")) + "]";
+            }
+
+            return "";
         }
     }
 }

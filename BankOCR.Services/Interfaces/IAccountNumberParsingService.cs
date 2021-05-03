@@ -9,5 +9,6 @@ namespace BankOCR.Services.Interfaces
     public interface IAccountNumberParsingService
     {
         public string ParseOcrInput(string input);
+        public IEnumerable<string> GetPossibleAccountNumbers(string input);
     }
 }

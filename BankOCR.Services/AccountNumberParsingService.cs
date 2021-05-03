@@ -1,6 +1,7 @@
 ﻿using BankOCR.Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace BankOCR.Services
 {
@@ -85,11 +86,63 @@ namespace BankOCR.Services
             foreach (var ocrInput in ocrInputs)
             {
                 string digitAsString;
-                if(ocrInputToDigitMap.TryGetValue(ocrInput, out digitAsString)) { ocrInputsAsDigits.Add(digitAsString); } else { ocrInputsAsDigits.Add("?"); }
+                if (ocrInputToDigitMap.TryGetValue(ocrInput, out digitAsString)) { ocrInputsAsDigits.Add(digitAsString); } else { ocrInputsAsDigits.Add("?"); }
             }
 
             //Return the identified digits concatenated as a string
             return string.Join(string.Empty, ocrInputsAsDigits);
+        }
+
+        public IEnumerable<string> GetPossibleAccountNumbers(string input)
+        {
+            var parsedAccountNumber = ParseOcrInput(input);
+            IList<string> possibleAccountNumbers = new List<string>();
+
+            var counter = -1;
+            foreach (var digit in parsedAccountNumber)
+            {
+                counter++;
+                //Try and get the string representation of the digit
+                var stringToTryChanging = ocrInputToDigitMap.FirstOrDefault(x => x.Value == digit.ToString()).Key;
+                if (stringToTryChanging is null) { break; }
+                for (int i = 0; i < stringToTryChanging.Length; i++)
+                {
+                    //Replace a character and see if can get a different value from the dictionary
+                    StringBuilder sb = new StringBuilder(stringToTryChanging);
+                    sb[i] = ' ';
+                    var ocrInputWithNewCharacter = sb.ToString();
+
+                    string stringAsDigit;
+                    //Try and see if there is a value in the dictionary for the new string with the new character
+                    if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != stringToTryChanging)
+                    {
+                        //If it exists we need to figure ut what the whole string would be and add it in
+                        //First, get the where we are in the account number
+                        var possibleAccountNumber = parsedAccountNumber.Substring(0, counter) + stringAsDigit + parsedAccountNumber.Substring(counter + 1, parsedAccountNumber.Length - counter - 1);
+                        possibleAccountNumbers.Add(possibleAccountNumber);
+                    }
+
+                    sb[i] = '_';
+                    ocrInputWithNewCharacter = sb.ToString();
+
+                    if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != stringToTryChanging)
+                    {
+                        var possibleAccountNumber = parsedAccountNumber.Substring(0, counter) + stringAsDigit + parsedAccountNumber.Substring(counter + 1, parsedAccountNumber.Length - counter - 1);
+                        possibleAccountNumbers.Add(possibleAccountNumber);
+                    }
+
+                    sb[i] = '|';
+                    ocrInputWithNewCharacter = sb.ToString();
+
+                    if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != stringToTryChanging)
+                    {
+                        var possibleAccountNumber = parsedAccountNumber.Substring(0, counter) + stringAsDigit + parsedAccountNumber.Substring(counter + 1, parsedAccountNumber.Length - counter - 1);
+                        possibleAccountNumbers.Add(possibleAccountNumber);
+                    }
+                }
+            }
+
+            return possibleAccountNumbers;
         }
     }
 }
