@@ -71,14 +71,11 @@ namespace BankOCR.Services
 
         public string ParseOcrInput(string input)
         {
-            var ocrInputs = ConvertOcrInputToDigitsAsStrings(input);
-
-            //Match each ocr input to a digit
+            //Match each ocr input to a digit in the dictionary
             var ocrInputsAsDigits = new List<string>();
-            foreach (var ocrInput in ocrInputs)
+            foreach (var ocrInput in ConvertOcrInputToDigitsAsStrings(input))
             {
-                string digitAsString;
-                if (ocrInputToDigitMap.TryGetValue(ocrInput, out digitAsString)) { ocrInputsAsDigits.Add(digitAsString); } else { ocrInputsAsDigits.Add("?"); }
+                if (ocrInputToDigitMap.TryGetValue(ocrInput, out string digitAsString)) { ocrInputsAsDigits.Add(digitAsString); } else { ocrInputsAsDigits.Add("?"); }
             }
 
             //Return the identified digits concatenated as a string
