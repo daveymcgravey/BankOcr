@@ -87,36 +87,34 @@ namespace BankOCR.Services
 
         public IEnumerable<string> GetPossibleAccountNumbers(string input)
         {
-            var ocrInputs = ConvertOcrInputToDigitsAsStrings(input);
+            var ocrInputs = ConvertOcrInputToDigitsAsStrings(input).ToList();
             var parsedAccountNumber = ParseOcrInput(input);
             var possibleAccountNumbers = new List<string>();
 
-            var counter = -1;
             string stringAsDigit;
             string ocrInputWithNewCharacter;
             var characters = new string[3] { " ", "_", "|" };
 
-            foreach (var ocrInput in ocrInputs)
+            var totalOcrInputs = ocrInputs.Count();
+            for (int i = 0; i < totalOcrInputs ; i++)
             {
-                counter++;
-
                 //Try and get the string representation of the digit
-                for (int i = 0; i < ocrInput.Length; i++)
+                for (int j = 0; j < 9; j++)
                 {
                     //Replace a character and see if can get a different value from the dictionary
-                    StringBuilder sb = new StringBuilder(ocrInput);
+                    StringBuilder sb = new StringBuilder(ocrInputs[i]);
                     foreach (var character in characters)
                     {
-                        sb.Remove(i, 1);
-                        sb.Insert(i, character);
+                        sb.Remove(j, 1);
+                        sb.Insert(j, character);
                         ocrInputWithNewCharacter = sb.ToString();
 
                         //Try and see if there is a value in the dictionary for the new string with the new character
-                        if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != ocrInput)
+                        if (ocrInputToDigitMap.TryGetValue(ocrInputWithNewCharacter, out stringAsDigit) && ocrInputToDigitMap.FirstOrDefault(x => x.Value == stringAsDigit).Key != ocrInputs[i])
                         {
                             //If it exists we need to figure ut what the whole string would be and add it in
                             //First, get the where we are in the account number
-                            var possibleAccountNumber = parsedAccountNumber.Substring(0, counter) + stringAsDigit + parsedAccountNumber.Substring(counter + 1, parsedAccountNumber.Length - counter - 1);
+                            var possibleAccountNumber = parsedAccountNumber.Substring(0, i) + stringAsDigit + parsedAccountNumber.Substring(i + 1, parsedAccountNumber.Length - i - 1);
                             possibleAccountNumbers.Add(possibleAccountNumber);
                         }
                     }
